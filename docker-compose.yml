@@ -1,0 +1,45 @@
+version: "3"
+services:
+  db:
+    image: mysql:8.0
+    command: mysqld --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-time-zone="+08:00"
+    restart: always
+    ports:
+      - "9010:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    networks:
+      - connection
+    volumes:
+    - MySQLdata:/var/lib/mysql
+
+  web:
+    build: .
+    command: python ./Django_project_test/manage.py runserver 0.0.0.0:8000
+    ports:
+      - "9012:8000"
+    volumes:
+      - ./Django_project_test:/code/Django_project_test
+    networks:
+      - connection
+    depends_on:
+      - db
+  
+  phpmyadmin:
+    depends_on:
+      - db
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - 9013:80
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: root
+    networks:
+      - connection
+
+networks:
+  connection:
+
+volumes:
+  MySQLdata:

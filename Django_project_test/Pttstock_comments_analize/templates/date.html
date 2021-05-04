@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+  <form action="{% url 'get_date' %}" method="POST">
+    {% csrf_token %}
+    {{ date_form }}
+    <input type="submit" value="SUBMIT">
+  </form>
+    {% if date %}
+        {{ date }}
+    {% endif %}
+
+
+</body>
+</html>

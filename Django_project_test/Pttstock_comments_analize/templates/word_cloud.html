@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0"/>
+    <title>Title</title>
+    {% load static %}
+    <script type="text/javascript" src="{% static 'Pttstock_comments_analize/js/jquery-3.3.1.slim.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'Pttstock_comments_analize/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'Pttstock_comments_analize/js/popper.min.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.1.0/chart.min.js"
+            integrity="sha512-RGbSeD/jDcZBWNsI1VCvdjcDULuSfWTtIva2ek5FtteXeSjLfXac4kqkDRHVGf1TwsXCAqPTF7/EYITD0/CTqw=="
+            crossorigin="anonymous"></script>
+    <link href="{% static 'Pttstock_comments_analize/css/bootstrap.min.css' %}" rel="stylesheet">
+</head>
+<body class="bg-light">
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #e3f2fd;">
+    <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1">Wordcloud</span>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-link" aria-current="page" href="#">Home</a>
+                <a class="nav-link" href="#">Features</a>
+                <a class="nav-link" href="#">Pricing</a>
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+            </div>
+        </div>
+    </div>
+</nav>
+<br>
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col-md-6">
+            <div class="card shadow p-3 mb-5 bg-white rounded">
+                <div class="card-body">
+                    <h5 class="card-title">Please fill in the date in the form below.</h5>
+                    <h5 class="card-title">(YYYY-MM-DD)</h5>
+                    <p class="card-text">
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        {{ date_form }}
+                        <br>
+                        <button type="submit" class="btn btn-primary" value="Submit">Submit</button>
+                    </form>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-md-center">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header bg-dark text-light">
+                    <p class="card-text">
+                        {% if date %}
+                        {{ date.value }}
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="card-body">
+                    {% if file_exist %}
+                    <div>
+                        <a type="button" data-toggle="modal" data-target="#cloudpic"><img
+                                src="../../media/Pttstock_comments_analize/{{date.value}}.png"
+                                style="width: 100%"></a>
+                    </div>
+                    {% else %}
+                    <p>Cannot find this picture!</p>
+                    {% endif %}
+
+                    </p>
+                </div>
+                <!-- Modal -->
+                <div class="modal fade" id="cloudpic" tabindex="-1" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog" style="max-width: 834px">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    {% if date %}
+                                    {{ date.value }}
+                                    {% endif %}
+                                </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <img src="../../media/Pttstock_comments_analize/{{date.value}}.png">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    {% for d in d_list %}
+    {% if not d in h_list %}
+    <div class="row justify-content-md-center">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header bg-dark text-light">
+                    <p class="card-text">
+                        {{ d }}
+                    </p>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <a type="button" data-toggle="modal" data-target="#cloudpic_{{ forloop.counter0 }}"><img
+                                    src="../../media/Pttstock_comments_analize/{{ d }}.png"
+                                    style="width: 100%"></a>
+                        </div>
+                        <div class="col-sm-6">
+                            <canvas id="myChart{{forloop.counter0}}" width="400" height="400"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal -->
+                <div class="modal fade" id="cloudpic_{{ forloop.counter0 }}" tabindex="-1"
+                     aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog" style="max-width: 834px">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    {{ d }}
+                                </h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <img src="../../media/Pttstock_comments_analize/{{ d }}.png">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    {% else %}
+    <div class="row justify-content-md-center">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header bg-danger text-light">
+                    <p class="card-text">
+                        {{ d }}
+                    </p>
+                </div>
+                <div class="card-body">
+                    <div>
+                        <p class="text-danger">放假囉</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    {% endif %}
+    {% endfor %}
+</div>
+<br>
+</body>
+{% for data in weekly_dict_list %}
+    <script>
+        $(document).ready(function () {
+            var ctx = $('#myChart'+"{{ forloop.counter0 }}");
+            var data = "{{data|safe}}"
+            var res = data.replaceAll("'", "\"");
+            data_json = JSON.parse(res);
+            console.log(data_json)
+            var keys = [];
+            var values = []
+            for (var k in data_json) {
+                keys.push(k);
+                values.push(data_json[k]);
+            }
+            var data = {
+                labels: keys,
+                datasets: [{
+                    label: 'Term Frequency',
+                    data: values,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+                        'rgba(255, 205, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(201, 203, 207, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(255, 159, 64)',
+                        'rgb(255, 205, 86)',
+                        'rgb(75, 192, 192)',
+                        'rgb(54, 162, 235)',
+                        'rgb(153, 102, 255)',
+                        'rgb(201, 203, 207)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: data,
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+
+    </script>
+{% endfor %}
+</html>

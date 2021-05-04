@@ -1,0 +1,10 @@
+import json
+
+
+with open('TWholiday.json',encoding='utf-8-sig', errors='ignore') as f:
+    a = json.loads(f.read())
+    s = []
+    for c in range(len(a)):
+        s.append(a[c]['date'].replace('/','-').replace("'",""))
+
+print(s)
